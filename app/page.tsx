@@ -1,22 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Issue } from "./lib/definitions";
 
-interface Issue {
-  _id: {
-    oid: string;
-  };
-  postedAt: number;
-  body: string;
-  likes: any[];
-  user: {
-    id: string;
-    name: string;
-    nickname: string;
-    picture: string;
-  };
-}
-
-export default function Home() {
+const Home: React.FC = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
 
   useEffect(() => {
@@ -24,6 +10,7 @@ export default function Home() {
       try {
         const getIssues = await fetch("/api/issues");
         const getIssueJson = await getIssues.json();
+        console.log(getIssueJson);
         setIssues(getIssueJson);
       } catch (error) {
         console.error("Error fetching issue tickets", error);
@@ -35,15 +22,18 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
-        {issues.map((issue) => (
-          <div key={issue._id.oid} className="mb-4">
-            <p>Posted at: {issue.postedAt}</p>
-            <p>Body: {issue.body}</p>
-            <p>Likes: {issue.likes}</p>
-            <p>User: {issue.user.name}</p>
+        {issues.map((issue, k) => (
+          <div key={k} className="mb-4">
+            <p>Project: {issue.project}</p>
+            <p>Title: {issue.title}</p>
+            <p>Description: {issue.description}</p>
+            <p>Priority: {issue.priority}</p>
+            <p>Status: {issue.status}</p>
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
+
+export default Home;
