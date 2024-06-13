@@ -2,15 +2,29 @@
 
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
-import { Issue } from "../lib/definitions";
+import { v4 as uuidv4 } from 'uuid';
+
+export const generateUUID = (): string => {
+  return uuidv4();
+};
+
+interface IssueFormProps {
+  project: string;
+  issueId: string;
+  priority: string;
+  description: string;
+  title: string;
+  status: string;
+}
 
 const IssueForm: React.FC = () => {
-  const [formData, setFormData] = useState<Issue>({
-    title: "",
+  const [formData, setFormData] = useState<IssueFormProps>({
     project: "",
+    issueId: uuidv4(),
+    priority: "1",
     description: "",
-    priority: 1,
-    status: "not started",
+    title: "",
+    status: "Not Started"
   });
 
   const router = useRouter();
@@ -30,10 +44,13 @@ const IssueForm: React.FC = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const res = await fetch("/api/Issues", {
+    console.log(formData)
+    const res = await fetch("https://k97zsj18u2.execute-api.us-east-1.amazonaws.com/dev/issues", {
       method: "POST",
-      body: JSON.stringify({ formData }),
-      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify( formData ),
+      headers: { 
+        "Content-Type": "application/json" ,
+      }
     });
 
     if (!res.ok) {
@@ -80,16 +97,18 @@ const IssueForm: React.FC = () => {
           rows={5}
         />
         <label>Priority</label>
-        <input
+        <select 
           id="priority"
           name="priority"
-          type="number"
           onChange={handleChange}
           required={true}
           value={formData.priority}
-          max={5}
-          min={1}
-        />
+        >
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+
         <label>Status</label>
         <select
           id="status"
@@ -98,11 +117,10 @@ const IssueForm: React.FC = () => {
           required={true}
           value={formData.status}
         >
-          <option value="not started">Not Started</option>
-          <option value="in progress">In Progress</option>
-          <option value="in review">In Review</option>
-          <option value="completed">Completed</option>
-          <input type="submit" className="btn" value="Create Ticket" />
+          <option value="Not Started">Not Started</option>
+          <option value="In Progress">In Progress</option>
+          <option value="In Review">In Review</option>
+          <option value="Completed">Completed</option>
         </select>
         <input type="submit" className="btn" value="Create Issue Ticket" />
       </form>

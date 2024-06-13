@@ -1,9 +1,22 @@
 export interface Issue {
-  project: string;
-  title: string;
-  description: string;
-  priority: number;
-  status: string;
+  project: {
+    S: string;
+  };
+  'issue-id': {
+    S: string;
+  };
+  priority: {
+    S: string;
+  };
+  description: {
+    S: string;
+  };
+  title: {
+    S: string;
+  };
+  status: {
+    S: string;
+  };
 }
 
 export interface FetchOptions {
@@ -11,7 +24,6 @@ export interface FetchOptions {
   headers: {
     "Content-Type": string;
     "Access-Control-Request-Headers": string;
-    "api-key": string;
   };
 }
 

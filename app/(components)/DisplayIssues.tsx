@@ -9,11 +9,7 @@ interface ProjectIssues {
   issues: Set<Issue>;
 }
 
-interface IssuePageProps {
-  issueData: Issue[];
-}
-
-const IssuePage: React.FC<IssuePageProps> = ({ issueData }) => {
+const DisplayIssues = ({ issueData, refresh}:{ issueData: Issue[], refresh: React.Dispatch<React.SetStateAction<boolean>>}) => {
   const [projectIssues, setProjectIssues] = useState<ProjectIssues[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>("");
 
@@ -21,13 +17,13 @@ const IssuePage: React.FC<IssuePageProps> = ({ issueData }) => {
     const fetchIssues = () => {
       const projectIssuesData: ProjectIssues[] =
         issueData?.reduce((acc: ProjectIssues[], issue: Issue) => {
-          const existingProject = acc.find((p) => p.project === issue.project);
+          const existingProject = acc.find((p) => p.project === issue.project.S);
 
           if (existingProject) {
             existingProject.issues.add(issue);
           } else {
             acc.push({
-              project: issue.project,
+              project: issue.project.S,
               issues: new Set([issue]),
             });
           }
@@ -54,6 +50,8 @@ const IssuePage: React.FC<IssuePageProps> = ({ issueData }) => {
       {project}
     </option>
   ));
+ 
+  console.log(issueData)
 
   return (
     <div className="p-5">
@@ -70,11 +68,11 @@ const IssuePage: React.FC<IssuePageProps> = ({ issueData }) => {
         </select>
       </div>
       <div className="lg:grid grid-cols-2 xl:grid-cols-3">
-        {filteredOptions.map((project) => (
-          <div key={project.project}>
+        {filteredOptions.map((project, idx) => (
+          <div key={idx}>
             <h2>{project.project}</h2>
             {Array.from(project.issues).map((issue) => (
-              <IssueCard key={`${issue.project}-${issue.title}`} {...issue} />
+              <IssueCard key={`${issue.project.S}-${issue.title.S}`} ticketData={issue} refresh={refresh}/>
             ))}
           </div>
         ))}
@@ -83,4 +81,4 @@ const IssuePage: React.FC<IssuePageProps> = ({ issueData }) => {
   );
 };
 
-export default IssuePage;
+export default DisplayIssues;
