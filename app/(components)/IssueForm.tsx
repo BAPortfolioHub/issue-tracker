@@ -1,12 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { FormEvent, useState } from "react";
-import { v4 as uuidv4 } from 'uuid';
-
-export const generateUUID = (): string => {
-  return uuidv4();
-};
+import React, { FormEvent, useState, useEffect } from "react";
+import { generateUUID } from "../utils/utils";
+import { Project } from "../lib/definitions";
 
 interface IssueFormProps {
   project: string;
@@ -18,9 +15,10 @@ interface IssueFormProps {
 }
 
 const IssueForm: React.FC = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
   const [formData, setFormData] = useState<IssueFormProps>({
     project: "",
-    issueId: uuidv4(),
+    issueId: generateUUID(),
     priority: "1",
     description: "",
     title: "",
@@ -28,6 +26,29 @@ const IssueForm: React.FC = () => {
   });
 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const getProjects = await fetch("https://k97zsj18u2.execute-api.us-east-1.amazonaws.com/dev/projects/", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+        const getProjectsJson: Project[] = await getProjects.json();
+        setProjects(getProjectsJson);
+      } catch (error) {
+        console.error("Error fetching projects", error);
+      }
+    };
+    fetchProjects();
+  }, []);
+
+  const projectOptions = [
+    ...Array.from((projects.map((p) => p.projectTitle))),
+  ].map((projName, key) => (
+    <option key={key} value={projName}>{projName}</option>
+  ))
+
 
   const handleChange = (
     event: React.ChangeEvent<
@@ -70,14 +91,18 @@ const IssueForm: React.FC = () => {
       >
         <h3> Create your Issue Ticket</h3>
         <label>Project</label>
-        <input
+        <select
           id="project"
           name="project"
-          type="text"
           onChange={handleChange}
           required={true}
           value={formData.project}
-        />
+        >
+          <option key="default" value = "" disabled>
+            Select a project
+          </option>
+          {projectOptions}
+        </select>
         <label>Title</label>
         <input
           id="title"

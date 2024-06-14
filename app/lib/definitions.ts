@@ -1,22 +1,11 @@
-export interface Issue {
-  project: {
-    S: string;
-  };
-  'issue-id': {
-    S: string;
-  };
-  priority: {
-    S: string;
-  };
-  description: {
-    S: string;
-  };
-  title: {
-    S: string;
-  };
-  status: {
-    S: string;
-  };
+
+export interface Issues {
+  project: string;
+  'issue-id': string;
+  priority: string;
+  description: string;
+  title: string;
+  status: string;
 }
 
 export interface FetchOptions {
@@ -27,8 +16,10 @@ export interface FetchOptions {
   };
 }
 
-export interface FetchBody {
-  dataSource: string;
-  database: string;
-  collection: string;
-}
+export interface Project {
+  projectTitle: string;
+  id: string;
+  createdAt: number;
+  expireAt: number;
+};
+

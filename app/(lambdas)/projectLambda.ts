@@ -1,6 +1,5 @@
 /*
 These lambda functions live in AWS and are invoked when calls are made to a restAPI.
-*/
 
 import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 
@@ -30,3 +29,5 @@ export const handler = async (event) => {
     }
     }
 };
+
+*/

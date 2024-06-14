@@ -1,6 +1,5 @@
 /*
 These lambda functions live in AWS and are invoked when calls are made to a restAPI.
-*/
 
 // import { DynamoDBDocumentClient, PutCommand, GetCommand, 
 //     UpdateCommand, DeleteCommand} from "@aws-sdk/lib-dynamodb";
@@ -42,3 +41,5 @@ export const handler = async (event) => {
         }
     }
 };
+
+*/

@@ -2,7 +2,7 @@
 
 import {useRouter} from 'next/navigation';
 import React, { FormEvent, useState } from 'react';
-import { generateUUID } from '@/app/(components)/IssueForm';
+import { generateUUID } from '@/app/utils/utils';          
 
 const NewProjectPage = ({ params }: any) => {
     const [projectTitle, setProjectTitle] = useState<string>("");
