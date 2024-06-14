@@ -11,8 +11,8 @@ interface ProjectIssues {
 
 const DisplayIssues = ({ issueData, projectData, refresh}:
   { 
-    issueData: Issues[], 
-    projectData: Project[]
+    issueData: Issues[] | null, 
+    projectData: Project[] | null,
     refresh: React.Dispatch<React.SetStateAction<boolean>>
   }) => {
   const [projects, setProjects] = useState<string[]>([])
@@ -42,9 +42,10 @@ const DisplayIssues = ({ issueData, projectData, refresh}:
 
   useEffect(() => {
     const fetchProjectArray = () => {
-      const projectArray: string[] = [
+      const projectArray: string[] = projectData ? ([
         ...Array.from((projectData.map((p) => p.projectTitle))),
-      ]
+      ]) : [];
+      
       setProjects(projectArray)
     }
     fetchProjectArray();

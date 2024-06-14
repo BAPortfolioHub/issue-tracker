@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { FormEvent, useState, useEffect } from "react";
+import React, { FormEvent, useState } from "react";
 import { generateUUID } from "../utils/utils";
 import { Project } from "../lib/definitions";
+import { useDataFetching } from "../(hooks)/fetchData";
 
 interface IssueFormProps {
   project: string;
@@ -15,7 +16,6 @@ interface IssueFormProps {
 }
 
 const IssueForm: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
   const [formData, setFormData] = useState<IssueFormProps>({
     project: "",
     issueId: generateUUID(),
@@ -23,32 +23,23 @@ const IssueForm: React.FC = () => {
     description: "",
     title: "",
     status: "Not Started"
-  });
+  })
 
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const getProjects = await fetch("https://k97zsj18u2.execute-api.us-east-1.amazonaws.com/dev/projects/", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          });
-        const getProjectsJson: Project[] = await getProjects.json();
-        setProjects(getProjectsJson);
-      } catch (error) {
-        console.error("Error fetching projects", error);
-      }
-    };
-    fetchProjects();
-  }, []);
+  const projects = useDataFetching<Project[]>(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/projects/`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    },
+    []
+   )
 
-  const projectOptions = [
-    ...Array.from((projects.map((p) => p.projectTitle))),
-  ].map((projName, key) => (
-    <option key={key} value={projName}>{projName}</option>
-  ))
-
+  const projectOptions = projects ? ( 
+    projects.map((project, key) => (
+      <option key={key} value={project.projectTitle}>{project.projectTitle}</option>
+    ))) : []
 
   const handleChange = (
     event: React.ChangeEvent<
@@ -65,8 +56,7 @@ const IssueForm: React.FC = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formData)
-    const res = await fetch("https://k97zsj18u2.execute-api.us-east-1.amazonaws.com/dev/issues", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/issues/`, {
       method: "POST",
       body: JSON.stringify( formData ),
       headers: { 

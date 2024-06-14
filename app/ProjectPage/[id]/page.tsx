@@ -19,7 +19,7 @@ const NewProjectPage = ({ params }: any) => {
             id: generateUUID(),
             projectTitle: projectTitle
         }
-        const res = await fetch("https://k97zsj18u2.execute-api.us-east-1.amazonaws.com/dev/projects", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/projects/`, {
           method: "POST",
           body: JSON.stringify( data ),
           headers: { 

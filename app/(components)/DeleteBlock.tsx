@@ -11,7 +11,7 @@ const DeleteBlock = ({id, refresh}:{id:string, refresh: React.Dispatch<React.Set
     const data = {
       issueId: id
     }
-    const res = await fetch("https://k97zsj18u2.execute-api.us-east-1.amazonaws.com/dev/issues", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/issues/`, {
       method: "DELETE",
       body: JSON.stringify(data),
       headers: {
