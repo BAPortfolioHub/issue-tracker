@@ -67,7 +67,7 @@ const DisplayIssues = ({ issueData, projectData, refresh}:
 
   return (
     <div className="p-5">
-      <div className="flex justify-center pb-5 flex-colitems-center">
+      <div className="flex justify-center pb-5 flex-col items-center">
         <select
           className="w-50%"
           value={selectedProject}
@@ -79,10 +79,10 @@ const DisplayIssues = ({ issueData, projectData, refresh}:
           {projectOptions}
         </select>
       </div>
-      <div className="flex flex-wrap gap-4 w-full">
+      <div>
         {filteredOptions.map((project, idx) => (
           <div key={idx}>
-            <div className="flex flex-wrap gap-4 w-full">
+            <div className="flex flex-wrap gap-4 justify-center items-center w-full">
               {Array.from(project.issues).map((issue) => (
                 <IssueCard key={issue["issue-id"]} ticketData={issue} refresh={refresh}/>
               ))}

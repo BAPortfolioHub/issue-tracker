@@ -5,7 +5,7 @@ import { Issues } from "../lib/definitions";
 
 const IssueCard = ({ticketData, refresh}:{ticketData:Issues, refresh: React.Dispatch<React.SetStateAction<boolean>>}) => {
   return (
-    <div className="flex flex-col bg-card hover:bg-card-hover rounded-md shadow-lg p-3 m-2">
+    <div className="flex flex-col bg-card hover:bg-card-hover rounded-md shadow-lg p-3 m-2 min-w-full sm:min-w-[300px] lg:min-w-[470px] max-w-sm">
       <div className="flex mb-3">
         <PriorityDisplay priority={ticketData.priority} />
         <div className="ml-auto">
