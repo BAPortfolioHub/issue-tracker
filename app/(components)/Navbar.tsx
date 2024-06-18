@@ -17,7 +17,9 @@ const Nav = () => {
         </Link>
       </div>
       <div>
-        <p className="text-default-text">PLACEHOLDER</p>
+        <Link href="/LoginPage/" className="btn" >
+          Login
+        </Link>
       </div>
     </nav>
   );
