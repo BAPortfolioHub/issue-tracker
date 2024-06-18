@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import { generateUUID } from "../utils/utils";
 import { Project } from "../lib/definitions";
@@ -16,16 +16,22 @@ interface IssueFormProps {
 }
 
 const IssueForm: React.FC = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const issueID = pathName?.split('/').pop();
+
+
   const [formData, setFormData] = useState<IssueFormProps>({
-    project: "",
-    issueId: generateUUID(),
-    priority: "1",
-    description: "",
-    title: "",
-    status: "Not Started"
+    project: searchParams.get('project') || "",
+    issueId: issueID === "/IssuePage/new" ? issueID : generateUUID(),
+    priority: searchParams.get('priority') || "1",
+    description: searchParams.get('description') || "",
+    title: searchParams.get('title') || "",
+    status: searchParams.get('status') || "Not Started"
   })
 
-  const router = useRouter();
+  
 
   const projects = useDataFetching<Project[]>(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/projects/`,
@@ -119,9 +125,9 @@ const IssueForm: React.FC = () => {
           required={true}
           value={formData.priority}
         >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
         </select>
 
         <label>Status</label>

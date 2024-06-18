@@ -19,6 +19,7 @@ const DisplayIssues = ({ issueData, projectData, refresh}:
   const [projectIssues, setProjectIssues] = useState<ProjectIssues[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>("");
 
+
   useEffect(() => {
     const fetchIssues = () => {
       const projectIssuesData: ProjectIssues[] =

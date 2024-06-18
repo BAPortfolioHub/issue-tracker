@@ -1,6 +1,5 @@
 /*
 These lambda functions live in AWS and are invoked when calls are made to a restAPI.
-
 import { DynamoDBDocumentClient, PutCommand, ScanCommand, DeleteCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
@@ -26,6 +25,9 @@ export const handler = async (event) => {
             case 'DELETE':
                 response = await handleDelete(JSON.parse(event.body));
                 break;
+            case 'PUT':
+                response = await handleUpdate(JSON.parse(event.body));
+                break;
             default:
                 response = {
                     statusCode: 405,
@@ -50,8 +52,6 @@ export const handler = async (event) => {
             body: JSON.stringify({ message: 'Internal Server Error' }),
         };
     }
-
-
 };
 
 const handleDelete = async (requestBody) => {
@@ -78,14 +78,12 @@ const handleDelete = async (requestBody) => {
       body: JSON.stringify({error: 'Failed to delete issue'})
     };
   }
-  
 };
 
 const handlePost = async (requestBody) => {
     // Parse the JSON-encoded string in the 'body' property
     const { issueId, project, title, priority, description, status } = requestBody;
     console.log(issueId, project, title, priority, description, status);
-
 
     // Validate required fields
     if (!issueId || !project || !title || !priority || !description || !status) {
@@ -162,5 +160,69 @@ const handleGet = async() => {
     };
   }
 };
+  
+  const handleUpdate = async (requestBody) => {
+    const { 'issue-id': issueId, project, title, priority, description, status } = requestBody;
 
+    // Log the received request body for debugging
+    console.log('Received requestBody:', requestBody);
+
+    if (!issueId || !project || !title || !priority || !description || !status) {
+        return {
+            statusCode: 400,
+            headers: {
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization, Access-Control-Allow-Methods",
+                "Access-Control-Allow-Origin": "*",
+            },
+            body: JSON.stringify({ error: 'Missing required fields in formData' })
+        };
+    }
+     
+    const params = {
+        TableName: 'issues',
+        Key: { 'issue-id': issueId },
+        UpdateExpression: 'set #proj = :project, #title = :title, #prio = :priority, #desc = :description, #status = :status',
+        ExpressionAttributeNames: {
+            '#proj': 'project',
+            '#title': 'title',
+            '#prio': 'priority',
+            '#desc': 'description',
+            '#status': 'status'
+        },
+        ExpressionAttributeValues: {
+            ':project': project,
+            ':title': title,
+            ':priority': priority,
+            ':description': description,
+            ':status': status,
+        },
+        ReturnValues: 'UPDATED_NEW'
+    };
+    
+    try {
+        const data = await ddbDocClient.send(new UpdateCommand(params));
+        return {
+            statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Methods": "PUT, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization, Access-Control-Allow-Methods",
+                "Access-Control-Allow-Origin": "*",
+            },
+            body: JSON.stringify({ message: 'Issue updated successfully', updatedAttributes: data.Attributes })
+        };
+    } catch (error) {
+        console.error('Error updating item:', error);
+        return {
+            statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Methods": "PUT, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization, Access-Control-Allow-Methods",
+                "Access-Control-Allow-Origin": "*",
+            },
+            body: JSON.stringify({ error: 'Failed to update issue' })
+        };
+    }
+ };
+  
 */
