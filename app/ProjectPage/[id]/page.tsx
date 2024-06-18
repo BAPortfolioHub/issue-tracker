@@ -6,6 +6,7 @@ import { generateUUID } from '@/app/utils/utils';
 
 const NewProjectPage = ({ params }: any) => {
     const [projectTitle, setProjectTitle] = useState<string>("");
+    const [projectExists, setProjectExists] = useState<boolean>(false);
     const router = useRouter()
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,10 +16,12 @@ const NewProjectPage = ({ params }: any) => {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setProjectExists(false);
         const data = {
             id: generateUUID(),
             projectTitle: projectTitle
         }
+        try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/projects/`, {
           method: "POST",
           body: JSON.stringify( data ),
@@ -28,11 +31,19 @@ const NewProjectPage = ({ params }: any) => {
         });
     
         if (!res.ok) {
-          throw new Error("Failed to create new Project");
+          const errorData = await res.json();
+          if (errorData.error === "Project with the same title already exists") {
+            setProjectExists(true);
+          } else {
+            throw new Error(errorData.message || 'Failed to create new Project');
+          }
+        } else {  
+          router.refresh();
+          router.push("/");
         }
-    
-        router.refresh();
-        router.push("/");
+      } catch (error) {
+        console.log(error);
+      }
       };
 
     return (
@@ -52,6 +63,7 @@ const NewProjectPage = ({ params }: any) => {
                 required={true}
                 value={projectTitle}
                 />
+                {projectExists && <p className="text-red-500"> Project Already Exists </p>}
                 <input type="submit" className="btn" value="Create Project" />
             </form>
         </div>
