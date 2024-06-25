@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Multi-Project Issue Tracker
+
+A serverless, distributed web application for tracking and managing issues across multiple projects.
+
+## Features
+
+- Create and manage multiple projects
+- Add, update, and delete issues within projects
+- Track issue details including description, status, and priority
+- Dynamic project selection via dropdown menu
+- Backend data validation to prevent duplicate project names
+
+## Technology Stack
+
+- Frontend: Next.js, Tailwind CSS, React Hooks
+- Backend: AWS Lambda
+- API: AWS API Gateway (RESTful)
+- Database: AWS DynamoDB
+
+## Architecture
+
+This application follows a serverless, distributed architecture:
+
+- The frontend is built with Next.js, providing a responsive and interactive user interface.
+- API requests are handled through AWS API Gateway, which routes them to appropriate AWS Lambda functions.
+- Lambda functions process the requests and interact with the DynamoDB database.
+- DynamoDB stores all project and issue data in a scalable, NoSQL format.
 
 ## Getting Started
 
-First, run the development server:
+To run this project locally, you must first have an active AWS account. 
+1. **Set up your AWS Account for using API Gateway**:
+    Information to set up your local machine can be found here: 
+    `https://docs.aws.amazon.com/apigateway/latest/developerguide/setting-up.html`
+2. **Fork this repository**:  
+    Fork the repository into your personal gitHub account to make your own changes.
+3. **Clone your repository**: 
+    Clone the repository to your local machine using
+    ```bash
+    git clone https://github.com/yourAccountName/issue-tracker.git
+    ```
+4. **Install dependencies**: 
+    Install Node locally if you don't have it already and run
+    ```bash
+    npm install
+    ```
+5. **Run the application**:
+    Run the local development server using:
+    ```bash
+    npm run dev
+    ```
+## API Endpoints
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Add local env file**:  
+    At the root level add a .env.local file
+2. **Create your API endpoint**:
+    Using AWS API Gateway, create your RestAPI.  
+    You can use the AWS documentation to guide yourself through: `https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html`
+3. **Add API endpoint to .env.local file**:  
+    Add your local API endpoint using:
+    ```bashx
+    NEXT_PUBLIC_API_ENDPOINT=<your API endpoint here>
+    ```
+4. **Create dynamoDB tables**:  
+    This project uses two dynamoDB tables:  
+    - issues
+    - projects  
+    `https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html`
+5. **Configure Lambda Functions**:
+    The lambda function code for the two endpoints is provided in the `app/lamdbdas` directory. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Future Enhancements
+Adding Auth using AWS Cognito.
+- Allowing users to only view projects they are a part of.
+- Only authorized users can update/delete their own issues.
+- Only authorized users can create new issues for projects they are assigned to. 
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
